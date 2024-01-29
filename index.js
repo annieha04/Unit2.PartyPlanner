@@ -4,65 +4,69 @@ const state = {
     events: [],
 };
 
-const eventList = document.querySelector("#events");
-
 document.addEventListener("DOMContentLoaded", () => {
+    const eventList = document.querySelector("#events");
     const addEventForm = document.querySelector("#addEvent");
-    addEventForm.addEventListener("submit", addEvent);
-});
+    addEventForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+    
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: addEventForm.name.value,
+                    imageUrl: addEventForm.imageUrl.value,
+                    description: addEventForm.description.value,
+                }),
+            });
 
-async function render() {
-    await getEvents();
-    renderEvents();
-}
-render();
+            if (!response.ok) {
+                throw new Error("Failed to create event");
+            }
 
-async function getEvents() {
-    try {
-        const response = await fetch(API_URL);
-        const json = await response.json();
-        state.events = json.data;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-function renderEvents() {
-    if (!state.events.length) {
-        eventList.innerHTML = "<li>No events.</li>";
-        return;
-    }
-
-const eventCards = state.events.map((event) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-    <h2>${event.name}</h2>
-    <img src="${event.imageUrl}" alt="${event.name}" />
-    <p>${event.description}</p>
-    `;
-    return li;
-});
-
-    eventList.replaceChildren(...eventCards);
-}
-
-try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: addEventForm.name.value,
-        imageUrl: addEventForm.imageUrl.value,
-        description: addEventForm.description.value,
-      }),
+            await getEvents();
+            renderEvents();
+        } catch (error) {
+            console.error(error);
+        }
     });
 
-    if (!response.ok) {
-      throw new Error("Failed to create event");
+    async function render() {
+        await getEvents();
+        renderEvents();
     }
 
-    render(); // Re-render the events after a successful POST
-  } catch (error) {
-    console.error(error);
-  }
-  
+    async function getEvents() {
+        try {
+            const response = await fetch(API_URL);
+            const json = await response.json();
+            state.events = json.data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function renderEvents() {
+        const eventList = document.querySelector("#events");
+
+        if (!state.events.length) {
+            eventList.innerHTML = "<li>No events.</li>";
+            return;
+        }
+
+        const eventCards = state.events.map((event) => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <h2>${event.name}</h2>
+                <img src="${event.imageUrl}" alt="${event.name}" />
+                <p>${event.description}</p>
+            `;
+            return li;
+        });
+
+        eventList.replaceChildren(...eventCards);
+    }
+
+    render();
+});
