@@ -16,9 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: addEventForm.name.value,
-                    description: addEventForm.description.value,
                     date: addEventForm.date.value,
+                    time: addEventForm.time.value,
                     location: addEventForm.location.value,
+                    description: addEventForm.description.value,                  
                 }),
             });
 
@@ -60,14 +61,40 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = document.createElement("li");
             li.innerHTML = `
                 <h2>${event.name}</h2>
-                <p>Description: ${event.description}</p>
                 <p>Date: ${event.date}</p>
+                <p>Time: ${event.time}</p>
                 <p>Location: ${event.location}</p>
+                <p>Description: ${event.description}</p>
+                <button class="delete-button" data-event-id="${event.id}">Delete</button>
             `;
             return li;
         });
 
         eventList.replaceChildren(...eventCards);
+    
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const eventId = event.target.dataset.eventId;
+                deleteEvent(eventId);
+            });
+        });
+    }
+
+    async function deleteEvent(eventId) {
+        try {
+            const response = await fetch(`${API_URL}/${eventId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete event');
+            }
+
+            await getEvents();
+            renderEvents();
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     render();
