@@ -53,25 +53,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const eventList = document.querySelector("#events");
 
         if (!state.events.length) {
-            eventList.innerHTML = "<li>No events.</li>";
+            eventList.innerHTML = "<p>No events.</p>";
             return;
         }
 
-        const eventCards = state.events.map((event) => {
-            const li = document.createElement("li");
-            li.innerHTML = `
-                <h2>${event.name}</h2>
-                <p>Date: ${event.date}</p>
-                <p>Time: ${event.time}</p>
-                <p>Location: ${event.location}</p>
-                <p>Description: ${event.description}</p>
-                <button class="delete-button" data-event-id="${event.id}">Delete</button>
-            `;
-            return li;
+        const eventParagraphs = state.events.map((event) => {
+            return `<p>${event.name}</p>`;
         });
 
-        eventList.replaceChildren(...eventCards);
-    
+        eventList.innerHTML = eventParagraphs.join('');
+
+
         document.querySelectorAll('.delete-button').forEach(button => {
             button.addEventListener('click', (event) => {
                 const eventId = event.target.dataset.eventId;
