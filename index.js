@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
     async function getEvents() {
         try {
             const response = await fetch(API_URL);
-            const json = await response.json();
-            state.events = json.data;
+            const events = await response.json();
+            state.events = events.data;
         } catch (error) {
             console.error(error);
         }
