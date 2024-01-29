@@ -16,8 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: addEventForm.name.value,
-                    imageUrl: addEventForm.imageUrl.value,
                     description: addEventForm.description.value,
+                    date: addEventForm.date.value,
+                    location: addEventForm.location.value,
                 }),
             });
 
@@ -59,8 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = document.createElement("li");
             li.innerHTML = `
                 <h2>${event.name}</h2>
-                <img src="${event.imageUrl}" alt="${event.name}" />
-                <p>${event.description}</p>
+                <p>Description: ${event.description}</p>
+                <p>Date: ${event.date}</p>
+                <p>Location: ${event.location}</p>
             `;
             return li;
         });
