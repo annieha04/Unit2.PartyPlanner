@@ -44,19 +44,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(API_URL);
             const events = await response.json();
             state.events = events.data;
+            // render();
         } catch (error) {
             console.error(error);
         }
     }
 
     function renderEvents() {
-        const eventList = document.querySelector("#events");
 
         if (!state.events.length) {
-            eventList.innerHTML = "<li>No events.</li>";
+            eventList.innerHTML = "<p>No events.</p>";
             return;
         }
-
+        console.log(state.events);
         const eventCards = state.events.map((event) => {
             const li = document.createElement("li");
             li.innerHTML = `
@@ -68,8 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button class="delete-button" data-event-id="${event.id}">Delete</button>
             `;
             return li;
+            eventCards.replaceChildren(...event);
         });
-
+        console.log(eventCards);
         eventList.replaceChildren(...eventCards);
 
         // Add event listener for delete buttons
