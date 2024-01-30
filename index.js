@@ -15,18 +15,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    name: addEventForm.name.value,
+                    name: addEventForm.title.value,
                     date: new Date(addEventForm.date.value),
                     time: addEventForm.time.value,
                     location: addEventForm.location.value,
                     description: addEventForm.description.value,                  
                 }),
             });
+            // console.log(response.body)
             const json = await response.json();
             if (json.error) {
                 throw new Error(json.message);
             }
-
+        
             await getEvents();
             renderEvents();
         } catch (error) {
