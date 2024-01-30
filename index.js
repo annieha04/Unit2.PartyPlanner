@@ -7,6 +7,7 @@ const state = {
 document.addEventListener("DOMContentLoaded", () => {
     const eventList = document.querySelector("#events");
     const addEventForm = document.querySelector("#addEvent");
+
     addEventForm.addEventListener("submit", async function (event) {
         event.preventDefault();
     
