@@ -16,15 +16,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: addEventForm.name.value,
-                    date: addEventForm.date.value,
+                    date: new Date(addEventForm.date.value),
                     time: addEventForm.time.value,
                     location: addEventForm.location.value,
                     description: addEventForm.description.value,                  
                 }),
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to create event");
+            const json = await response.json();
+            if (json.error) {
+                throw new Error(json.message);
             }
 
             await getEvents();
@@ -51,12 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderEvents() {
+        const eventList = document.querySelector("#events");
 
         if (!state.events.length) {
             eventList.innerHTML = "<p>No events.</p>";
             return;
         }
-        console.log(state.events);
+        
         const eventCards = state.events.map((event) => {
             const li = document.createElement("li");
             li.innerHTML = `
@@ -70,10 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return li;
             eventCards.replaceChildren(...event);
         });
-        console.log(eventCards);
+
         eventList.replaceChildren(...eventCards);
 
-        // Add event listener for delete buttons
         document.querySelectorAll('.delete-button').forEach(button => {
             button.addEventListener('click', (event) => {
                 const eventId = event.target.dataset.eventId;
